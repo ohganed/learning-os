@@ -1,0 +1,11 @@
+{
+  "name": "Learning OS",
+  "short_name": "Learning OS",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f3f3ef",
+  "theme_color": "#f3f3ef",
+  "icons": [
+    {"src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable"}
+  ]
+}
