@@ -1,109 +1,160 @@
-# NLP-inspired design principles for Learning OS
+# Grinder / Bandler design layer for Learning OS
 
-Learning OS borrows a small number of useful design heuristics associated with Neuro-Linguistic Programming (NLP), without treating NLP as a scientifically validated theory of learning or therapy.
+## Purpose
+Learning OS uses selected process ideas from the work of John Grinder and Richard Bandler as design lenses, not as a claim that NLP as a whole is a scientifically validated theory of learning or therapy.
 
-The purpose is not to make the app a coach, therapist, or persuasion system. The purpose is to improve how the system represents learning experiences and helps the user notice alternative interpretations.
+The emphasis here is specifically on Grinder's linguistic precision, modeling, calibration, context, process-over-content, and preservation of choice; and on Bandler's attention to transformations and the differences that change results.
 
-## 1. The map is not the territory
-A stored note, label, score, or interpretation is a representation of an experience, not the experience itself.
+The app must not become a coach that imposes interpretations. It should become better at recovering structure from vague language, observing learning processes, and helping the user generate distinctions and choices.
 
-System consequences:
-- Never treat one self-rating or one record as the final truth about ability.
-- Preserve the original observation separately from later interpretations.
-- Allow multiple interpretations of the same learning event.
-- Prefer language such as `current view`, `working interpretation`, or `in this context` over permanent labels.
-
-## 2. Separate observation from interpretation
-Example:
-- Observation: `I answered 4 of 10 correctly.`
-- Interpretation: `I do not understand irregular verbs.`
-
-Store these separately whenever possible.
-
-This helps Learning OS avoid turning temporary performance into identity.
-
-## 3. Reframing as an optional cognitive move
-A difficulty can sometimes be viewed from another useful frame.
+## 1. Language is a map, not the learning territory
+A sentence written by the learner is a representation of experience. Do not silently promote it into an objective fact or identity claim.
 
 Example:
-- `I failed this question.`
-- Alternative frame: `This question exposed the exact boundary of my current model.`
+`I am bad at English pronunciation.`
 
-The app should never force positive reframing or overwrite the user's own description. A reframe is a second possible view, not a correction of the first.
+Preserve the original statement verbatim, but allow its experiential structure to be specified:
+`English > Pronunciation > connected speech > distinguishing v/f in unfamiliar words`
 
-Atomic record types may include:
-- `reframe`
-- `alternative_view`
-- `context_shift`
+The original statement remains part of history. Specification creates additional records; it does not overwrite the learner's words.
 
-Relations may include:
-- `reframes`
-- `contrasts_with`
-- `applies_in_context`
-
-## 4. Flexibility over one correct strategy
-If one learning method repeatedly produces confusion, the system can help surface alternatives without declaring one universal learning style.
+## 2. Meta-Model-inspired Specification Engine
+When language loses useful information through broad generalization, missing referents, unspecified processes, comparisons without standards, or vague modal language, Learning OS may offer one quiet precision prompt.
 
 Examples:
-- explanation -> example
-- example -> diagram
-- reading -> speaking
-- abstract rule -> concrete case
-- whole -> parts
-- parts -> whole
+- `I don't understand physics.` -> `Which part, specifically?`
+- `Pronunciation is difficult.` -> `What becomes difficult?`
+- `I always forget this.` -> `Always, or in particular situations?`
+- `This method is better.` -> `Better for what?`
+- `I can't do it.` -> `What happens when you try?`
 
-Do not infer fixed VAK / visual-auditory-kinesthetic learner identities. Instead record which representations or actions were useful in which specific contexts.
+Rules:
+- Never interrogate the learner with a chain of questions.
+- Never treat the prompt as therapy.
+- Preserve the unspecific original language.
+- A specification is a new observation/interpretation record linked to the original.
+- Prefer one useful question over exhaustive linguistic parsing.
 
-## 5. Chunking up and chunking down
-Learning can move between levels.
+## 3. Separate language levels underground
+Where useful, Atomic Learning Records can distinguish:
+- `raw_expression`: exactly what the learner said/wrote
+- `observation`: directly reported or measured event
+- `interpretation`: meaning assigned to an observation
+- `generalization`: broader claim inferred from cases
+- `question`: missing information or uncertainty
+- `specification`: a more precise description
+- `alternative_description`: another valid linguistic framing
 
-Chunk down:
-`English > Pronunciation > v/f > voicing > one minimal pair`
+Do not force the user to select these categories in the surface UI. They are underground distinctions.
 
-Chunk up:
-`v/f > voiced/unvoiced contrast > phonological contrasts > pronunciation`
+## 4. Process over content
+Grinder's later New Code work emphasizes process patterns rather than imposing content solutions. Learning OS should therefore ask not only WHAT was learned, but what sequence transformed the learner's state or performance.
 
-The hierarchy must therefore support arbitrary depth and easy movement between specific examples and larger concepts.
+Example transformation trace:
+`confused -> compared two examples -> noticed contrast -> tried own example -> insight`
 
-## 6. Outcome and evidence are different
-A desired outcome should be stored separately from evidence that it has been reached.
+This is more reusable than storing only `understood v/f`.
+
+The engine should be able to detect repeated process sequences without claiming causality prematurely.
+
+## 5. Modeling: discover competence before explaining it
+When something works unusually well, do not immediately explain why from a theory. First preserve the observable sequence and context.
+
+Possible model record:
+- context
+- starting state
+- task
+- sequence of actions/representations
+- distinctions noticed
+- feedback available
+- transition events
+- outcome/evidence
+
+Only after repeated evidence should the system propose a candidate pattern.
+
+A candidate pattern remains a hypothesis and can be contradicted by later records.
+
+## 6. Calibration before interpretation
+Learning OS should privilege changes that can be observed in its own data:
+- question -> distinction
+- repeated error -> later correct discrimination
+- long hesitation -> later fluent response
+- revisit -> insight
+- representation change -> performance change
+
+Do not infer hidden psychological states merely because an event occurred. Store uncertainty and confidence with derived patterns.
+
+## 7. Context is part of meaning
+A strategy is not globally `good` or `bad`. Store the context in which it appeared useful.
+
+`diagram helped`
+is weaker than:
+`diagram helped distinguish force directions in inclined-plane problems after verbal explanation had stalled.`
+
+This prevents Learning OS from turning successful episodes into fixed learner types.
+
+## 8. Choice and flexibility are preferred outcomes
+The system should not optimize toward one prescribed learning method. A richer repertoire of workable responses in context is preferable.
+
+If the learner is stuck, possible prompts can invite a representation/process shift:
+- `More specific?`
+- `What changes between these two examples?`
+- `Try the opposite case?`
+- `Can this be drawn?`
+- `Can you produce your own example?`
+- `What happens just before you get stuck?`
+
+Suggestions are experiments, not prescriptions.
+
+## 9. Know-nothing principle for the engine
+Do not let the engine's previous model of the learner dominate new evidence. Historical patterns can generate hypotheses, but the current event must be allowed to contradict them.
+
+Implementation consequence:
+`user_model` should be probabilistic/versioned and derived from durable events, never a permanent profile such as `visual learner`, `poor memory`, or `bad at grammar`.
+
+## 10. Inductive pattern discovery
+Where possible, let patterns become visible through experience before naming them. The system can resurface two or three related learning episodes and let the learner notice the common structure.
+
+Only afterward may it offer a tentative label such as:
+`Comparison seems to precede many of your distinction events in pronunciation.`
+
+This supports discovery rather than merely delivering a rule.
+
+## 11. Bandler transformation lens
+For meaningful transitions, ask underground:
+`What changed between state/event A and state/event B?`
+
+Store candidate difference-makers as relations rather than conclusions.
 
 Example:
-- Outcome: `hear the difference between v and f naturally`
-- Evidence: `correctly distinguish 9 of 10 unfamiliar examples`
+`? -> minimal-pair comparison -> distinction -> self-produced examples -> gotit`
 
-This prevents vague goals from being mistaken for learning progress.
+Across repeated traces, the Pattern Engine may estimate which transformations are associated with useful outcomes for this learner in this context.
 
-## 7. State and context are metadata, not identity
-If useful and voluntarily recorded, a learning event may carry contextual metadata such as:
-- location
-- surrounding activity
-- perceived energy
-- perceived concentration
-- before/after another activity
+## 12. Relation to the rest of Learning OS
+- Bennett: finite life-time and where it went.
+- Todd: disciplined learning practice and how the learner learns.
+- Toyama: incubation, forgetting, re-encounter, emergence.
+- Kurashita: externalized atomic thought and connection.
+- Langer: novel distinctions, context, alternatives, resistance to premature closure.
+- Grinder: linguistic precision, modeling, calibration, context, process, choice.
+- Bandler: transformation structure and difference-making changes.
 
-The engine may later detect patterns, but it must not convert temporary states into permanent labels about the person.
+Together these should support a cycle such as:
+`Experience -> Capture -> Specify -> Distinguish -> Connect -> Experiment -> Observe change -> Model tentatively -> Revisit`
 
-## 8. Preserve choice
-Prompts should open possibilities rather than pressure the user.
+## Durable data requirements
+Future schema versions should be able to add, without breaking old records:
+- `raw_expression`
+- `linguistic_role`
+- `specified_from_record_id`
+- `context_snapshot`
+- `process_trace`
+- `candidate_pattern`
+- `pattern_confidence`
+- `contradicting_evidence`
+- `state_transition`
+- `difference_maker`
+- `model_version`
 
-Useful quiet prompts include:
-- `Another way to see this?`
-- `What changes if the context changes?`
-- `More specific?`
-- `What larger idea might this belong to?`
-- `What would count as evidence?`
-
-These prompts should appear sparingly and be dismissible.
-
-## Underground support
-The durable model should be able to support, even when the UI does not expose everything yet:
-- observation vs interpretation
-- original thought vs later reframe
-- multiple perspectives on one record
-- arbitrary chunk depth
-- context-dependent strategy history
-- outcome + evidence links
-- state/context metadata
-
-All such additions must be append-first or migration-safe so older data remains valid.
+All derived interpretations must be reconstructible from durable source records where practical. Never delete historical evidence simply because the model changes.
