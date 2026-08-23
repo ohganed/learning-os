@@ -1,27 +1,26 @@
-# Learning OS Architecture v4.0
+# Learning OS Architecture v5.0
 
 ## Product principle
-The surface should stay quiet. The underground system should become richer over time.
+The surface stays quiet. The underground becomes richer.
 
-Learning OS is not a study timer and not a learner-ranking system. It is a durable record of how knowledge, questions, distinctions, connections, interpretations, cognitive friction, strategies, and thoughts develop through time.
+Learning OS is not a study timer, a motivation scorer, a diagnosis engine, or a learner-ranking system. It is a durable record of how knowledge, questions, distinctions, connections, interpretations, cognitive friction, representations, strategies, effort, ease, and thoughts develop through time.
 
-The system should help the learner become better at noticing learning itself without turning learning into constant self-monitoring.
+The system should help the learner become better at learning without forcing constant self-monitoring.
 
 ## Intellectual foundations translated into system behavior
 - Bennett: TIME — where did a finite part of life become learning?
 - Todd: HOW — what learning processes actually occur and become useful?
 - Toyama: BECOMING — ideas may incubate, disappear, reappear, and change.
-- Kurashita: EXTERNAL MIND — small records, thoughts, unfinished ideas and links become tools for thinking.
-- Langer: MINDFUL DISTINCTION — notice difference, context and alternative views; resist premature closure.
-- Grinder: LANGUAGE / MODELING — recover useful structure from vague language, calibrate to evidence, preserve context and choice.
+- Kurashita: EXTERNAL MIND — small records, unfinished ideas and links become tools for thinking.
+- Langer: MINDFUL DISTINCTION — notice differences, context and alternatives; resist premature closure.
+- Grinder: LANGUAGE / MODELING — recover useful experiential structure from vague language, calibrate to evidence, preserve context and choice.
 - Bandler: TRANSFORMATION — what changed between A and B, and which differences may have mattered?
-- Arden: PLASTICITY — understanding is not the endpoint; observe movement from effortful processing toward contextual ease across repeated use.
+- Arden: PLASTICITY — understanding is not the endpoint; observe movement from effortful processing toward contextual ease.
 - Jantzen: MULTIPLE ROUTES — do not build around a fictional standard learner; representation mismatch can create friction.
 - Gathercole & Alloway: WORKING MEMORY — complex learning can fail because too much must be held and processed at once. Externalize unnecessary holding demands.
-- Brown: EXECUTIVE FUNCTION — activation, focus, effort, emotion, memory and action are context-sensitive parts of learning, not moral judgments about motivation.
-- Amen: EMBODIED CONTEXT — retain only the broad systems insight that learning occurs in a body and context. Optional state information may help pattern discovery; do not perform brain typing or medical inference.
-
-Detailed implementation principles live in `docs/COGNITIVE_LEARNING_ENGINE.md` and `docs/NLP_INSPIRED_DESIGN.md`.
+- Brown: EXECUTIVE FUNCTION — activation, focus, effort, emotion, memory and action are context-sensitive parts of learning, not moral judgments.
+- Amen: EMBODIED CONTEXT — learning occurs in a body and context; optional state data can support pattern discovery, without brain typing or medical inference.
+- Pecher / Zwaan and grounded cognition: GROUNDING — concepts can be linked to situations, perception, spatial structure, action and contrast while preserving movement back to abstraction.
 
 ## Core stance: no frictionless learner
 Do not divide users into `normal` and `special-needs` learning paths. Human cognition varies across people, tasks, representations, contexts and time.
@@ -30,83 +29,155 @@ Difficulty is evidence to investigate, not a verdict about the learner.
 
 Never persist fixed identity labels such as `visual learner`, `poor memory`, `unmotivated`, `bad at languages`, or diagnostic guesses.
 
-## Underground durable model
-The durable core is split into stores that are independent of the current UI:
+## Durable Core
+The canonical learning history remains independent of the current UI and independent of any current cognitive theory.
 
 1. `nodes`
    - Arbitrary-depth learning hierarchy.
-   - Example: English > Pronunciation > v/f > voiced/unvoiced contrast.
-   - Area / Thread / Topic are views, not database depth limits.
+   - Area / Thread / Topic are views, not hard database limits.
 
 2. `sessions`
-   - Containers for periods of deliberate learning.
-   - Start/end timestamps, node context, content, position and duration.
-   - Future optional context fields are additive.
+   - Containers for deliberate learning periods.
+   - Full timestamps, node context, content, source position and duration.
 
 3. `records`
    - Append-first Atomic Learning Records.
    - Each record owns a full ISO timestamp.
-   - Existing types include session_start, session_end, gotit, question, surprise, distinction, revisit, thought, reflection and connection.
-   - Future types may include observation, specification, reframe, representation_shift, friction, workspace_snapshot, ease, revision and context_shift.
+   - Examples: session_start, session_end, gotit, question, surprise, distinction, revisit, thought, reflection, connection, workspace_snapshot, grounding, learning_state.
    - Older thinking is not overwritten because current thinking changed.
 
 4. `relations`
    - Typed links between nodes or records.
-   - A relation may include `why`, because the reason for a connection is part of the learner's thinking.
-   - Types may include related, similar_to, contrasts_with, prerequisite_for, example_of, exception_to, reframes, evidence_for and applies_in_context.
+   - The reason for a relation may be stored because `why` is part of the learner's thinking.
 
-5. `derived` (future)
-   - Rebuildable/versioned hypotheses generated from durable evidence: patterns, transition candidates, incubation chains, effort-to-ease traces, cognitive-friction hypotheses.
-   - Derived data must never replace source records.
+## Cognitive Extensions
+Cognitive models live beside, not inside, the Durable Core.
+
+### Cognitive v4 extension
+Stores:
+- workspace snapshots
+- annotations
+- low-confidence hypotheses
+- grounding routes
+- model versions
+
+### Cognitive v5 growth extension
+Stores:
+- optional effort/ease state marks
+- process notes
+- versioned candidate patterns
+- model versions
+
+Extensions may be replaced in the future without rewriting historical Core evidence.
 
 ## External Working Memory
-Long-form reading and complex problem solving need a resumable mental workspace. Future workspace snapshots can preserve:
+Long-form reading and complex problem solving require resumable mental context. A workspace snapshot may preserve:
 - current claim/problem
 - concepts currently being held
-- prerequisites/references
 - unresolved questions
-- current hypothesis
-- connections
 - source position
 - next return point
+- optional friction markers
+- optional grounding routes
 
 The goal is to restore *mental context*, not merely a page number.
 
-## Cognitive Friction
-When learning stalls, the system should consider multiple contextual explanations before personal deficit. Candidate friction categories may include conceptual, representation, working-memory, retrieval, attention-shift, activation, effort, emotional, environmental and unknown.
+## Grounding Engine
+A concept may have optional routes into:
+- concrete situation / example
+- visual or spatial representation
+- action, manipulation, experiment or production
+- comparison, contrast or exception
 
-`unknown` is a valid and important state.
+Grounding is not a replacement for abstraction. The desired capability is:
 
-## Representation and transformation
-The same learning node may be encountered through text, audio, diagram, comparison, example, action/self-production or whole context.
+`abstract <-> concrete`
 
-The engine should preserve sequences around meaningful change, for example:
-`question -> comparison -> distinction -> own example -> gotit`
+Repeated questions without a grounding route may generate a low-confidence `grounding_candidate`. This is a prompt to try another representation, never a learner-type judgment.
 
-Repeated sequences can become tentative patterns, never permanent learner types.
+## Cognitive Friction Engine
+When learning stalls, possible friction categories include conceptual, representation, working-memory, retrieval, attention shift, activation, effort, emotional, environmental, contextual and unknown.
 
-## Context and state
-Optional context metadata may be attached to records or sessions, but these are temporary states, not identity labels. Self-reported fatigue, sleepiness, calmness or tension may be useful context. Do not infer diagnosis, disease, brain-region activity or medical treatment.
+`unknown` is a first-class state.
 
-## Views derived from the same evidence
-- Learning Map — what am I learning?
-- Timeline — what happened at a particular point in time?
-- Thoughts & Connections — how is my external mind developing?
-- Where your time went — what did a selected period of life become?
-- Alternative Views / Revision History — how has interpretation changed?
-- Resume Mental Context — what was I holding when I stopped?
-- How you changed — what has become more precise, connected, flexible or easier over time?
+The engine stores evidence and tentative hypotheses separately.
 
-These are projections of the durable core, not separate canonical databases.
+## Language Precision Engine
+Broad self-statements such as `I always forget this`, `I am bad at physics`, or `I cannot understand this` remain preserved verbatim.
 
-## Upgrade and data-survival rules
-1. Never make a UI representation the canonical data model.
-2. Durable IDs, timestamps and original source records survive UI redesigns.
-3. New cognitive features are additive whenever possible.
-4. A later interpretation/reframe/revision never destroys the original record.
+The engine may surface one quiet specification prompt such as:
+- Which part, specifically?
+- Always, or in particular situations?
+- What happens when you try?
+
+Specification creates new evidence; it does not overwrite the original statement.
+
+## Transformation Trace Engine
+For each session, meaningful sequences can be reconstructed from Atomic Records.
+
+Example:
+`question -> grounding -> distinction -> own example -> gotit`
+
+Repeated sequences may become versioned candidate patterns. Candidate patterns remain hypotheses and can be weakened by later contradictory evidence.
+
+## Incubation / Open Loop Engine
+Questions and revisits that remain unresolved are preserved as open loops rather than treated as failures.
+
+Later insight or distinction on the same node can form a possible incubation / re-encounter chain.
+
+Elapsed time is part of the evidence because every event is located at a unique datetime point.
+
+## Effort-to-Ease Engine
+`Got it` is not treated as the end of learning.
+
+The user may optionally record a state only when something noticeably changes from effortful to easier or more natural. Repeated state marks can support tentative effort-to-ease traces.
+
+The system must never force a rating after every session.
+
+## Pattern Engine
+The Pattern Engine works from durable evidence and reconstructible traces.
+
+It may examine:
+- repeated transformation sequences
+- grounding followed by later distinction/insight
+- question -> revisit -> later insight
+- effort -> ease changes
+- context-sensitive differences
+
+Patterns must include model version, evidence count, and uncertainty. They are not permanent learner profiles.
+
+## Growth View — How You Changed
+Growth is broader than time spent or test score.
+
+Possible observations include:
+- questions becoming more specific
+- more distinctions being noticed
+- more explicit connections being created
+- unresolved questions being revisited
+- abstract ideas gaining concrete grounding routes
+- previously effortful processing becoming easier
+- richer external working-memory snapshots
+
+The Growth View is a projection of historical evidence, not a separate source of truth.
+
+## Data portability and upgrade contract
+Portable bundles include:
+- Durable Core
+- Cognitive v4 extension
+- Cognitive v5 extension
+- compatibility metadata
+
+### Non-negotiable upgrade rules
+1. UI is replaceable; evidence is not.
+2. Durable IDs, timestamps and original source records survive redesigns.
+3. New features are additive whenever possible.
+4. Later interpretations, reframes and hypotheses never destroy original evidence.
 5. Derived analyses are versioned and rebuildable.
-6. Unknown fields must survive export/import.
-7. Migrations are explicit and recorded in metadata.
+6. Unknown fields must survive export/import where practical.
+7. Migrations are explicit and recorded.
 8. Before a destructive schema change, preserve a raw snapshot.
-9. Backward compatibility is a product feature, not cleanup work.
+9. Backward compatibility is a product feature.
 10. Frequent upgrades should enrich old data rather than invalidate it.
+
+## Master rule
+**Evidence is durable. Hypotheses are replaceable. UI is replaceable.**
