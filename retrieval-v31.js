@@ -65,7 +65,7 @@ function refresh(){
  const recs=D.db.records.filter(r=>r.sessionId===sid&&r.type==='retrieval_attempt');
  const last=recs[recs.length-1];
  if(last){attemptId=last.id;$('rf-situation').value=last.metadata?.situation||'';$('rf-attempt').value=last.content||''}
- else{$('rf-situation').value='';$('rf-attempt').value=''}
+ else{$('rf-situation').value=D.db.sessions[sid]?.content||'';$('rf-attempt').value=''}
  $('rf-hint').value='';$('rf-retry').value='';$('rf-transfer-situation').value='';$('rf-transfer-attempt').value='';
  $('rf-after').hidden=!attemptId;
  $('rf-status').textContent=attemptId?'試行済み：Hint → 再試行 → Transfer':'場面を決めて開始';
