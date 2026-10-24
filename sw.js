@@ -1,4 +1,4 @@
-const CACHE='learning-os-v31';
+const CACHE='learning-os-v32';
 const ASSETS=['./','./index.html','./manifest.json','./icon.svg','./style-v3.css','./db-v3.js','./app-v3.js','./cognitive-v4.js','./cognitive-v5.js','./visual-v6.js','./visual-v7.js','./control-v8.js','./retrieval-v31.js'];
 self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).then(()=>self.skipWaiting())));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
