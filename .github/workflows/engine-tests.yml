@@ -1,0 +1,25 @@
+name: Learning Engine Tests
+on:
+  push:
+    branches: [development-os-v1]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  engine-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Syntax checks
+        run: |
+          node --check engine/learning-engine-v0.1.js
+          node --check engine/physics-two-blocks-v0.1.js
+          node --check engine/physics-next-step-v0.1.js
+      - name: Unit tests
+        run: node --test engine/*.test.js
