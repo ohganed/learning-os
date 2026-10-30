@@ -40,12 +40,13 @@ button{border:0;border-radius:10px;background:#185f96;color:white;font:inherit;f
 </div>
 <p><button type="submit">答えを確かめる</button></p>
 <div class="result" id="score" role="status" aria-live="polite"></div>
-<div id="feedback" aria-live="polite"></div>
+<div id="feedback" aria-live="polite"></div><section id="nextStep" class="panel" hidden><h3>次の一問</h3><p id="nextPrompt"></p><button type="button" id="showNextHint">ヒントを見る</button><p id="nextHint" hidden></p><p class="muted" id="nextReason"></p></section>
 </form>
 <section class="panel"><h2>考え方のヒント</h2><p>AとBを一体として考えると、接触力は内力なので打ち消し合います。一方、AとBを別々に考えると、接触力Cがそれぞれ逆向きに働きます。</p><p class="muted">この試作は採点と説明のみを行います。生徒名や回答履歴は保存しません。</p></section>
 </main>
 <script src="./engine/learning-engine-v0.1.js"></script>
 <script src="./engine/physics-two-blocks-v0.1.js"></script>
+<script src="./engine/physics-next-step-v0.1.js"></script>
 <script>
 (function(){
  'use strict';
@@ -66,6 +67,13 @@ button{border:0;border-radius:10px;background:#185f96;color:white;font:inherit;f
      line.textContent=labels[key]+'：'+comment+(analysis.score===1?'':' 正答：'+answers[key]);
      output.appendChild(line);
    }
+   const recommendation=PhysicsNextStep.recommend(graded);
+   document.getElementById('nextStep').hidden=false;
+   document.getElementById('nextPrompt').textContent=recommendation.prompt;
+   document.getElementById('nextHint').hidden=true;
+   document.getElementById('nextHint').textContent=recommendation.hint || '正答：'+recommendation.expected;
+   document.getElementById('nextReason').textContent=recommendation.kind==='diagnostic'?'まだ判断材料が足りないため、まず力の捉え方を確認します。':recommendation.kind==='transfer'?'全項目に正解しました。数値を変えて応用します。':'もう一度、この考え方を確かめます。';
  });
+ document.getElementById('showNextHint').addEventListener('click',function(){document.getElementById('nextHint').hidden=false;});
 })();
 </script></body></html>
