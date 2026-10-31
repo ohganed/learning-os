@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Learning OS · 物理演習 v10</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;color:#183047;background:#f3f7fb;color-scheme:light}
+*{box-sizing:border-box}body{margin:0}main{max-width:850px;margin:auto;padding:22px 16px 70px}
+h1{font-size:clamp(1.6rem,5vw,2.4rem);margin-bottom:.3rem}h2{font-size:1.2rem;margin-top:0}
+p{line-height:1.6}.muted{color:#536c80}.card{background:#fff;border:1px solid #d8e3ed;border-radius:15px;padding:20px;margin:16px 0;box-shadow:0 2px 10px #1234 04}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+label{font-weight:650}input:not([type=checkbox]),select{display:block;width:100%;padding:12px;margin-top:6px;font:inherit;border:1px solid #8da3b7;border-radius:9px;background:white}
+button,.download{display:inline-block;border:0;border-radius:9px;background:#165d96;color:white;padding:12px 17px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
+button.secondary{background:#e5eff8;color:#194c70}.buttonline{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #f0ac40;outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}.ok{color:#126340}.bad{color:#92302f}.hint{background:#eef5fb;border-left:4px solid #3275aa;padding:12px;border-radius:8px}
+.diagram{display:flex;align-items:center;justify-content:center;padding:20px 8px;background:#edf5fd;border-radius:12px}
+.block{display:grid;place-items:center;width:100px;height:70px;border:2px solid #376387;background:#d9e8f8;font-weight:700}
+.block.b{background:#d8f0e0;border-color:#39845e}.arrow{font-weight:800;color:#a65924;padding-right:10px}
+[hidden]{display:none!important}.status{font-weight:700;padding:8px 0}small{color:#526a7d}
+</style></head><body><main>
+<a href="./index.html">← Learning OS</a>
+<header><p class="muted">LEARNING OS · PHYSICS</p><h1>2物体の運動</h1><p class="muted">ver.10 試作｜回答→診断→再挑戦→復習。自分のペースで進められます。</p></header>
+<section class="card"><h2>問題</h2><p>摩擦のない水平面上のA（2 kg）とB（3 kg）を、Aに右向き10 Nの力を加えて動かします。2つは一緒に動きます。右を正とします。</p>
+<div class="diagram" role="img" aria-label="右向き10ニュートンで押すAがBに接する。Aは2キログラム、Bは3キログラム。"><span class="arrow">10 N →</span><div class="block">A<br>2 kg</div><div class="block b">B<br>3 kg</div></div>
+<p class="muted">まず、AとBを一体で考え、次に別々に働く力を考えましょう。</p></section>
+<form class="card" id="initialForm"><h2>第1段階：自分で考える</h2>
+<div class="grid">
+<label>① 加速度（m/s²）<input id="acceleration" inputmode="decimal" autocomplete="off"></label>
+<label>② AがBを押す接触力（N）<input id="contact" inputmode="decimal" autocomplete="off"></label>
+<label>③ Aに働く合力（N）<input id="netA" inputmode="decimal" autocomplete="off"></label>
+<label>④ Bに働く合力（N）<input id="netB" inputmode="decimal" autocomplete="off"></label>
+<label>⑤ Aの運動方程式<select id="equationA"><option value="">選択</option><option value="F-C=mA*a">10 − C = 2a</option><option value="F+C=mA*a">10 + C = 2a</option><option value="F=mA*a">10 = 2a</option></select></label>
+<label>⑥ Bの運動方程式<select id="equationB"><option value="">選択</option><option value="C=mB*a">C = 3a</option><option value="F-C=mB*a">10 − C = 3a</option><option value="F=mB*a">10 = 3a</option></select></label>
+</div><p><button type="submit">回答して次へ</button></p></form>
+<section class="card" id="feedbackCard" hidden><h2>第2段階：結果を確認</h2><div id="score" class="status" role="status"></div><div id="feedback"></div></section>
+<form class="card" id="retryForm" hidden><h2>第3段階：次の一問</h2><p id="retryPrompt"></p>
+<label>あなたの考え<input id="retryAnswer" autocomplete="off" placeholder="短い文や数値で答えましょう"></label>
+<div class="buttonline"><button type="submit">再挑戦の回答を記録</button><button type="button" class="secondary" id="hintButton">ヒント</button></div>
+<p class="hint" id="hint" hidden></p><small>自由回答は自動で確実に判定できない場合があります。その場合は要確認として扱います。</small></form>
+<section class="card" id="complete" hidden><h2>第4段階：振り返りと復習</h2><p id="retryResult"></p><p id="reviewSummary"></p><button id="again" type="button">新しいセッションを始める</button></section>
+<section class="card"><h2>学習記録と教師向け集計（試作）</h2>
+<label class="row"><input type="checkbox" id="saveConsent"> この端末に匿名の演習記録を保存する</label>
+<p class="muted">初期設定では保存しません。氏名・学校名を入力する機能はありません。端末内保存を有効にすると、このブラウザの保存領域に記録します。</p>
+<div class="buttonline"><button type="button" class="secondary" id="exportButton">JSONバックアップを保存</button><label class="secondary">バックアップを読み込む<input type="file" id="importFile" accept="application/json"></label><button type="button" class="secondary" id="clearButton">端末内記録を消去</button></div>
+<div id="summary" aria-live="polite"></div><div id="due" aria-live="polite"></div>
+</section>
+</main>
+<script src="./engine/learning-engine-v0.1.js"></script>
+<script src="./engine/physics-two-blocks-v0.1.js"></script>
+<script src="./engine/physics-next-step-v0.1.js"></script>
+<script src="./engine/learning-cycle-v10.js"></script>
+<script>
+(function(){
+'use strict';
+const KEY='learning-os-physics-v10', CONSENT='learning-os-physics-v10-consent';
+const problem=PhysicsTwoBlocks.createProblem(2,3,10);
+const fields=LearningCycleV10.FIELDS;
+const labels={acceleration:'加速度',contact:'接触力',netA:'Aの合力',netB:'Bの合力',equationA:'Aの運動方程式',equationB:'Bの運動方程式'};
+let sessions=[],active=null;
+const el=id=>document.getElementById(id), now=()=>new Date().toISOString();
+const freshId=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():'session-'+Date.now()+'-'+Math.random().toString(36).slice(2);
+const save=()=>{if(el('saveConsent').checked)localStorage.setItem(KEY,LearningCycleV10.exportData(sessions));};
+function refresh(){
+ const report=LearningCycleV10.teacherSummary(sessions);
+ const groups=fields.map(f=>labels[f]+': '+report.fields[f].correct+'/'+report.fields[f].answered);
+ el('summary').textContent='匿名集計（この端末のみ）：'+report.sessions+'セッション、完了'+report.completed+'件。'+groups.join('／');
+ const due=sessions.flatMap(s=>LearningCycleV10.dueReviews(s,now()));
+ el('due').textContent='現在の復習対象：'+due.length+'項目（重複する学習項目を含みます）';
+}
+function start(){
+ active=LearningCycleV10.createSession(freshId(),problem,now());
+ el('initialForm').hidden=false;el('initialForm').reset();
+ el('feedbackCard').hidden=true;el('retryForm').hidden=true;el('complete').hidden=true;el('hint').hidden=true;
+ el('initialForm').scrollIntoView({behavior:'smooth',block:'start'});
+}
+el('initialForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const answers=Object.fromEntries(fields.map(f=>[f,el(f).value]));
+ active=LearningCycleV10.submitInitial(active,problem,answers,freshId(),now());
+ sessions.push(active);save();refresh();
+ el('initialForm').hidden=true;el('feedbackCard').hidden=false;el('retryForm').hidden=false;
+ const grade=active.attempts[0].grade;
+ el('score').textContent='正解 '+grade.correctCount+' / '+grade.total;
+ const out=el('feedback');out.replaceChildren();
+ for(const field of fields){
+  const result=grade.results[field],p=document.createElement('p');
+  p.className=result.score?'ok':'bad';
+  p.textContent=labels[field]+'：'+(result.score?'正解':'未正解・要確認');
+  out.appendChild(p);
+ }
+ el('retryPrompt').textContent=active.currentNext.prompt;
+ el('hint').textContent=active.currentNext.hint||'新しい数値でも同じ手順で考えます。';
+ el('retryAnswer').value='';
+ el('retryForm').scrollIntoView({behavior:'smooth',block:'start'});
+});
+el('hintButton').addEventListener('click',()=>el('hint').hidden=false);
+el('retryForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ active=LearningCycleV10.submitFollowup(active,el('retryAnswer').value,freshId(),now());
+ sessions[sessions.length-1]=active;save();refresh();
+ el('retryForm').hidden=true;el('complete').hidden=false;
+ const attempt=active.attempts[1];
+ el('retryResult').textContent=attempt.assessment.correct?'確認できました。':'回答を記録しました。自由回答のため、教師による確認が必要な場合があります。';
+ const due=LearningCycleV10.dueReviews(active,now());
+ el('reviewSummary').textContent='次回の復習予定は保存済みです。現時点で期限が来ている項目：'+due.length;
+ el('complete').scrollIntoView({behavior:'smooth',block:'start'});
+});
+el('again').addEventListener('click',start);
+el('saveConsent').addEventListener('change',()=>{
+ localStorage.setItem(CONSENT,el('saveConsent').checked?'yes':'no');
+ if(el('saveConsent').checked)save();else localStorage.removeItem(KEY);
+ refresh();
+});
+el('exportButton').addEventListener('click',()=>{
+ const blob=new Blob([LearningCycleV10.exportData(sessions)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='learning-os-physics-v10.json';a.click();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+el('importFile').addEventListener('change',async e=>{
+ const file=e.target.files[0];if(!file)return;
+ try{const loaded=LearningCycleV10.importData(await file.text());
+ if(!confirm(loaded.length+'件の記録で現在の一覧を置き換えますか？'))return;
+ sessions=loaded;save();refresh();alert('読み込みました。');
+ }catch(err){alert('バックアップを読み込めません：'+err.message);}
+ e.target.value='';
+});
+el('clearButton').addEventListener('click',()=>{
+ if(!confirm('この端末の演習記録を消去しますか？'))return;
+ sessions=[];localStorage.removeItem(KEY);refresh();start();
+});
+try{
+ const consent=localStorage.getItem(CONSENT)==='yes';el('saveConsent').checked=consent;
+ if(consent&&localStorage.getItem(KEY))sessions=LearningCycleV10.importData(localStorage.getItem(KEY));
+}catch(err){el('summary').textContent='保存記録の読み込みに失敗しました。バックアップを確認してください。';}
+refresh();start();
+})();
+</script></body></html>
